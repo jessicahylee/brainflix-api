@@ -1,26 +1,30 @@
 const fs = require('fs')
 const express = require('express')
 const router = express.Router()
-const cors = require('cors')
 require('dotenv').config()
 const { v4: uuidv4 } = require('uuid')
 const path = require('path')
-// const videosDetailed = data.videos
+const cors = require('cors')
 
 router.use(cors()) // Browser has access.
 router.use(express.json())
-console.log('this is the line')
-const videosDetailed = JSON.parse(fs.readFileSync('../data/video-details.json'))
-const videos = JSON.parse(fs.readFileSync('../data/video.json'))
+
+const videosDetailed = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '..', 'data', 'video-details.json')),
+)
+const videos = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '..', 'data', 'video.json')),
+)
+
 //Get a list of videos
-router.get('/', (req, rest) => {
+router.get('/', (req, res) => {
   console.log('videos are here')
   res.status(200).json(videosDetailed)
 })
 
-router.get('/video/:videoID', (req, res) => {
+router.get('/video/:id', (req, res) => {
   fs.readFile(
-    path.join(__dirname, 'files', 'package.json'),
+    path.join(__dirname, 'files', 'video-details.json'),
     (err, fileData) => {
       if (err) {
         console.error(err)
