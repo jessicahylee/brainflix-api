@@ -5,10 +5,6 @@ const fs = require('fs')
 
 const multer = require('multer')
 
-const handleError = (req, res) => {
-  res.status(500).contentType('text/plain').end('Oops! Something went wrong!')
-}
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, '../public')
@@ -46,3 +42,5 @@ router.post('/upload', upload.single('image'), (req, res) => {
 router.get('/image.png', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/image.png'))
 })
+
+module.exports = router
