@@ -2,9 +2,9 @@ const fs = require('fs')
 const express = require('express')
 const router = express.Router()
 require('dotenv').config()
-const { v4: uuidv4 } = require('uuid')
 const path = require('path')
 const cors = require('cors')
+const uniqid = require('uniqid')
 
 router.use(cors()) // Browser has access.
 router.use(express.json())
@@ -27,22 +27,21 @@ router.get('/video/:id', (req, res) => {
   const video = videosDetailed.filter((v) => v.id === id)
   console.log(video)
   res.json(video)
-
 })
 
-router.post('/', (req, res) => {
-  const { title, channel, views, description, like, videoUrl } = req.body
-  const newVideos = {
-    id: uuidv4(),
-    title,
-    channel,
-    views,
-    description,
-    like,
-    videoUrl,
-  }
-  videosDetailed.push(newVideos)
-  res.json(newVideos)
+router.post('/videos/:id', (req, res) => {
+  const newId = uniqid()
+  const newComment = Object.assign({ id: newId }, req.body)
+  const videoId = req.params.id
+  const video = videosDetailed.find((el) => el.id === videoId)
+  video.comments.push(newComment)
+  fs.writeFile(
+    `./assets/data/video-details.json`,
+    JSON.stringify(videosDetailed),
+    (err) => {
+      res.status(201).json(video)
+    },
+  )
 })
 
 module.exports = router
